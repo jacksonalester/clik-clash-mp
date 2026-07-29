@@ -1,0 +1,15 @@
+{
+  "name": "clik-clash-mp",
+  "version": "1.0.0",
+  "description": "CLIK! CLASH authoritative multiplayer server",
+  "main": "mp_server.js",
+  "scripts": {
+    "start": "node mp_server.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
