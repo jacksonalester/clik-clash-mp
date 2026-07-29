@@ -6,3 +6,4 @@ One repo, two deployments:
 
 Server env vars (optional): `MP_MAP` (default `quarry`). Leave `MP_DEBUG` unset in production — it gates test-only debug messages.
 Health check: `GET /` returns `{ok:true, game:"CLIK! CLASH MP", clients, state, uptime}`.
+
