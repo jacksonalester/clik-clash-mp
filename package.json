@@ -1,7 +1,8 @@
 {
-  "name": "clik-clash-mp",
+  "name": "battleheads-arena",
   "version": "1.0.0",
-  "description": "CLIK! CLASH authoritative multiplayer server",
+  "private": true,
+  "description": "BATTLEHEADS: ARENA \u2014 web game + authoritative multiplayer server",
   "main": "mp_server.js",
   "scripts": {
     "start": "node mp_server.js"

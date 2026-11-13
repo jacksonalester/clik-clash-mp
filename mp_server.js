@@ -115,16 +115,24 @@ function releaseEnt(e){
   M.driveDbg(e, null);
 }
 function snapshot(){
-  return M.getEnts().filter(e=>!e.dead || e.respT!==undefined).map(e => ({
+  const ents = M.getEnts().filter(e=>!e.dead || e.respT!==undefined).map(e => ({
     id: e.name, team: e.team, x: Math.round(e.x), y: Math.round(e.y), aim: +e.aim.toFixed(2),
-    hp: e.hp, dead: !!e.dead, downed: !!e.downed, bot: !!e.bot, weapon: e.weapon, streak: e.streak||0
+    hp: e.hp, dead: !!e.dead, downed: !!e.downed, bot: !!e.bot, weapon: e.weapon, streak: e.streak||0,
+    skin: e.skin, aura: e.aura, emblem: e.emblem, clan: e.clan, lvl: e.lvl,
+    fl: e.flash>0?1:0, rid: e.riding?1:0
   }));
+  const bl = (M.getBulletsDbg()||[]).slice(0,60).map(b => ({
+    x: Math.round(b.x), y: Math.round(b.y), vx: Math.round(b.vx), vy: Math.round(b.vy), r: b.r||3, col: b.col||'#ffd23f'
+  }));
+  const sdv = M.getSdDbg();
+  const sd = sdv ? { r: sdv.r|0, b: sdv.b|0, phase: sdv.phase } : null;
+  return { ents, bl, sd };
 }
 
 const PORT = process.env.PORT || process.env.MP_PORT || 8081;
 const httpServer = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-  res.end(JSON.stringify({ ok: true, game: 'CLIK! CLASH MP', map: process.env.MP_MAP || 'quarry', clients: clients.size, state: M.getState(), uptime: Math.round(process.uptime()) }));
+  res.end(JSON.stringify({ ok: true, game: 'BATTLEHEADS MP', map: process.env.MP_MAP || 'quarry', clients: clients.size, state: M.getState(), uptime: Math.round(process.uptime()) }));
 });
 const wss = new WebSocketServer({ server: httpServer });
 httpServer.listen(PORT, () => console.log('[mp] authoritative server listening on', PORT, 'map:', process.env.MP_MAP || 'quarry'));
@@ -133,7 +141,7 @@ wss.on('connection', (ws) => {
   const ent = claimEnt();
   if (!ent) { ws.send(JSON.stringify({t:'full'})); ws.close(); return; }
   clients.set(ws, { ent, input: { mvx:0, mvy:0, aim:ent.aim, fire:false } });
-  ws.send(JSON.stringify({ t:'welcome', id: ent.name, team: ent.team }));
+  ws.send(JSON.stringify({ t:'welcome', v:1, id: ent.name, team: ent.team, map: process.env.MP_MAP || 'quarry' }));
   console.log('[mp] client claimed', ent.name, '(' + ent.team + ')');
 
   ws.on('message', (raw) => {
@@ -175,7 +183,8 @@ setInterval(() => {
   M.update(1 / TICK_HZ);
   if (process.env.MP_TRACE2) { for (const [ws,c] of clients){ const e=c.ent; const live=M.getEnts().find(x=>x.name===e.name); console.log('[trace2 post]', e.name, 'heldRef.x=', Math.round(e.x), 'sameObj?', live===e, 'liveRef.x=', live?Math.round(live.x):'?', 'live._dbgMv=', live&&JSON.stringify(live._dbgMv)); } }
 
-  const snap = JSON.stringify({ t:'state', ents: snapshot() });
+  const s = snapshot();
+  const snap = JSON.stringify({ t:'state', ents: s.ents, bl: s.bl, sd: s.sd });
   for (const ws of clients.keys()) if (ws.readyState === 1) ws.send(snap);
 }, TICK_MS);
 }
