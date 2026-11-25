@@ -1,0 +1,273 @@
+<canvas id="cv"></canvas>
+<!--ICONS-->
+
+<!-- ===== SPLASH ===== -->
+<div id="splash">
+  <svg class="lockup" viewBox="0 0 680 486" role="img" aria-label="STICKHEADS"><use href="#bhLogo"/></svg>
+  <div class="splashtap">TAP TO START</div>
+  <div class="splashfine">WORLD CLASS CREATIVE DESIGN AND TECH LLC</div>
+</div>
+
+<!-- ===== PERSISTENT CHROME ===== -->
+<header id="topbar">
+  <button id="tbName" aria-label="Profile"><span id="tbAva"><canvas id="tbAvaC" width="64" height="64"></canvas></span><span id="tbNick">YOU<small id="tbLvl">LV 1</small></span></button>
+  <div class="tbspacer"></div>
+  <div class="chip" title="Trophies"><span class="well"><svg class="ic" style="color:var(--bh-gold-hi)"><use href="#i-trophy"/></svg></span><b id="tbTr">0</b></div>
+  <div class="chip gold" title="Coins"><span class="well"><svg class="ic"><use href="#i-coin"/></svg></span><b id="tbCoins">0</b></div>
+  <button id="tbGear" class="icobtn" aria-label="Settings"><svg class="ic"><use href="#i-gear-six"/></svg></button>
+</header>
+<nav id="navbar"><div class="navin">
+  <button class="nv" data-nav="menu"><svg class="ic"><use href="#i-house"/></svg>HOME</button>
+  <button class="nv" data-nav="shop"><svg class="ic"><use href="#i-storefront"/></svg>SHOP</button>
+  <button class="nv" data-nav="locker"><svg class="ic"><use href="#i-t-shirt"/></svg>LOCKER</button>
+  <button class="nv" data-nav="ranks"><svg class="ic"><use href="#i-ranking"/></svg>RANKS</button>
+  <button class="nv" data-nav="pass"><svg class="ic"><use href="#i-star"/></svg>PASS<i class="dot hidden" id="navPassDot"></i></button>
+</div></nav>
+
+<!-- ===== HUB ===== -->
+<main id="menu" class="scr meta">
+  <div class="hub-hero" id="hubHero">
+    <svg class="lockup" viewBox="0 0 680 486" aria-hidden="true"><use href="#bhLogo"/></svg>
+    <button class="rankchip" id="mLvl" aria-label="Rank road">
+      <canvas id="mRankC" width="64" height="64"></canvas>
+      <span><span class="rk-t" id="mRankT">LVL 1 · RECRUIT</span><span class="bar"><i id="mXpFill"></i></span></span>
+      <svg class="ic"><use href="#i-caret-right"/></svg>
+    </button>
+  </div>
+  <button class="dailybar" id="mChal" aria-label="Daily challenges"></button>
+  <div class="hub-actions">
+    <button class="btn play xl pulse" id="btnPlay"><svg class="ic" style="width:30px;height:30px"><use href="#i-sword"/></svg><span class="btn-2l">QUICKPLAY<small>FREE-FOR-ALL · EVERYONE VS EVERYONE</small></span></button>
+    <div class="modegrid">
+      <button class="tile blood" id="btnTeams"><span class="sock"><svg class="ic"><use href="#i-shield"/></svg></span><b>TEAMS</b><small>5v5 · BOMB / FLAG</small></button>
+      <button class="tile void" id="btnPantheon"><span class="sock"><svg class="ic"><use href="#i-lightning"/></svg></span><b>PANTHEON</b><small>GODS ONLY</small></button>
+      <button class="tile ice" id="btnOnline"><i class="live"></i><span class="sock"><svg class="ic"><use href="#i-globe-hemisphere-west"/></svg></span><b>ONLINE</b><small>LIVE 5v5</small></button>
+    </div>
+    <button class="btn ghost sm" id="btnModes"><svg class="ic"><use href="#i-map-trifold"/></svg>ALL MODES &amp; MAPS</button>
+  </div>
+</main>
+
+<!-- ===== MODES ===== -->
+<section id="lobby" class="scr meta hidden">
+  <div class="scr-head"><button class="icobtn" id="btnLobbyBack" aria-label="Back"><svg class="ic"><use href="#i-caret-left"/></svg></button>
+    <div class="grow"><div class="scr-title">CHOOSE A MODE</div><div class="cap">Solo and team modes fill with bots · Online is live players</div></div></div>
+  <div class="modelist" id="lobbyList"></div>
+</section>
+
+<!-- ===== SHOP (+ TRADE) ===== -->
+<section id="shop" class="scr meta hidden">
+  <div class="scr-head"><div class="grow"><div class="scr-title">ITEM SHOP</div><div class="cap">Coins only · earned by playing · no loot boxes</div></div>
+    <div class="chip plain" title="New stock in"><svg class="ic" style="width:16px;height:16px;color:var(--tx-3)"><use href="#i-clock"/></svg><b id="shopTimer2" style="font-size:14px">--:--:--</b></div></div>
+  <div class="tabs"><button class="tab on" id="shopTabA">DAILY STOCK</button><button class="tab" id="shopTabB">TRADER</button></div>
+  <div id="shopPane">
+    <div class="itemgrid" id="shopGrid"></div>
+  </div>
+  <div id="mktPane" class="hidden">
+    <div class="card note" id="mktHead"><b style="font-family:var(--font-d);font-weight:400;font-size:14px;color:#fff;display:block;margin-bottom:3px">THE TRADER</b>Buy rare leftovers or sell gear you don't use. The Trader keeps a 10% fee on every deal.<div id="mktNotice" style="color:var(--bh-gold-hi);font-weight:900;margin-top:4px"></div><div id="mktFees" class="dim" style="margin-top:2px"></div></div>
+    <div class="tabs" style="margin-top:10px"><button class="tab on" id="mktTabB">BUY</button><button class="tab" id="mktTabS">SELL</button></div>
+    <div class="tlist" id="mktGrid" style="margin-top:10px"></div>
+  </div>
+</section>
+<div id="market" class="hidden"></div>
+
+<!-- ===== LOCKER ===== -->
+<section id="locker" class="scr meta hidden">
+  <div class="scr-head"><div class="grow"><div class="scr-title">LOCKER</div><div class="cap" id="lkCount">Tap to equip</div></div></div>
+  <div class="card locker-pv"><canvas id="lkPv" width="300" height="260"></canvas></div>
+  <div class="tabs"><button class="tab on" id="tabSkins">SKINS</button><button class="tab" id="tabAuras">AURAS</button><button class="tab" id="tabEmb">PLATES</button></div>
+  <div class="itemgrid c3" id="grid"></div>
+</section>
+
+<!-- ===== RANKS ===== -->
+<section id="ranks" class="scr meta hidden">
+  <div class="scr-head"><div class="grow"><div class="scr-title">TRAINING LADDER</div><div class="cap">You vs the bot league · wins earn trophies · global ranks arrive with accounts</div></div></div>
+  <div class="card champ" id="rkChamp"></div>
+  <div class="rklist" id="rkList"></div>
+</section>
+
+<!-- ===== PASS ===== -->
+<section id="pass" class="scr meta hidden">
+  <div class="card passcard" id="passCard">
+    <div class="d t28">BATTLE PASS</div>
+    <div class="cap" style="color:rgba(255,255,255,.75);margin-top:4px">Season 1 · First Blood · 30 tiers</div>
+    <div class="sock"><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="d t17" id="passTier">TIER 1</span><span id="passXp" style="font-size:12px;font-weight:900;color:rgba(255,255,255,.8)">0 / 120 XP</span></div>
+      <div class="bar gold" style="margin-top:7px" id="passBarW"><i id="passBar"></i></div></div>
+    <button class="btn play" id="passBuy">UNLOCK PREMIUM</button>
+  </div>
+  <div class="cap" style="text-align:left">Top row premium · bottom row free · level up to climb</div>
+  <div class="passstrip" id="passStrip"></div>
+</section>
+
+<!-- ===== PROFILE ===== -->
+<section id="profile" class="scr meta hidden">
+  <div class="card pfhead" id="pfHead"><canvas id="pfPv" width="240" height="240"></canvas>
+    <div style="min-width:0;flex:1"><div class="d t22" id="pfName" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">YOU</div><div class="cap" id="pfSub" style="margin-top:5px">LV 1</div>
+      <button class="btn sm ghost" id="pfEdit" style="margin-top:9px;width:auto"><svg class="ic"><use href="#i-gear-six"/></svg>EDIT CALLSIGN</button></div></div>
+  <div class="card pfsec"><h3>Career</h3><div class="pfstats" id="pfStats"></div></div>
+  <div class="card pfsec"><h3>Medals</h3><div class="pfmed" id="pfMed"></div></div>
+  <div class="card pfsec"><h3>Equipped</h3><div class="pfshow" id="pfShow"></div></div>
+  <button class="btn ice" id="pfShare"><svg class="ic"><use href="#i-share-network"/></svg>INVITE A FRIEND</button>
+</section>
+
+<!-- ===== SETTINGS ===== -->
+<section id="options" class="scr hidden">
+  <div class="scr-head"><button class="icobtn" id="optBack" aria-label="Back"><svg class="ic"><use href="#i-caret-left"/></svg></button><div class="grow"><div class="scr-title">SETTINGS</div></div></div>
+  <input id="optName" maxlength="12" placeholder="YOUR CALLSIGN" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="done" aria-label="Callsign">
+  <div class="cap" style="text-align:left">Gameplay</div>
+  <div class="card setgroup">
+    <div class="row"><svg class="ic"><use href="#i-skull"/></svg><div class="grow"><b>Bot difficulty</b><small>Spicy bots aim faster and hit harder</small></div><div class="seg" id="optBots"><button data-v="ez">CHILL</button><button data-v="hard">SPICY</button></div></div>
+    <button class="row" id="optAssist"><svg class="ic"><use href="#i-crosshair"/></svg><span class="grow"><b>Aim assist</b><small>Nudges your aim toward the nearest enemy</small></span><i class="tgl"></i></button>
+    <button class="row" id="optLefty"><svg class="ic"><use href="#i-hand-tap"/></svg><span class="grow"><b>Left-handed controls</b><small>Swaps the pad and the fire button</small></span><i class="tgl"></i></button>
+  </div>
+  <div class="cap" style="text-align:left">Sound &amp; feel</div>
+  <div class="card setgroup">
+    <button class="row" id="optSound"><svg class="ic"><use href="#i-speaker-high"/></svg><span class="grow"><b>Sound</b></span><i class="tgl"></i></button>
+    <div class="row volrow"><svg class="ic"><use href="#i-sliders-horizontal"/></svg><div class="grow" style="display:flex;align-items:center;gap:10px"><b style="flex:0 0 auto">Volume</b><input type="range" id="optVol" min="0" max="100" value="50" aria-label="Volume"></div></div>
+    <button class="row" id="optHaptic"><svg class="ic"><use href="#i-vibrate"/></svg><span class="grow"><b>Haptics</b><small>Vibration on hits and taps (Android)</small></span><i class="tgl"></i></button>
+    <button class="row" id="optShake"><svg class="ic"><use href="#i-device-mobile"/></svg><span class="grow"><b>Screen shake</b></span><i class="tgl"></i></button>
+    <div class="row"><svg class="ic"><use href="#i-sparkle"/></svg><div class="grow"><b>Graphics</b><small>Low saves battery on older phones</small></div><div class="seg" id="optGfx"><button data-v="high">HIGH</button><button data-v="low">LOW</button></div></div>
+  </div>
+  <div class="cap" style="text-align:left">Help</div>
+  <div class="card setgroup">
+    <button class="row" id="optHow"><svg class="ic"><use href="#i-question"/></svg><span class="grow"><b>How to play</b></span><svg class="ic"><use href="#i-caret-right"/></svg></button>
+    <button class="row" id="optSupport"><svg class="ic"><use href="#i-envelope-simple"/></svg><span class="grow"><b>Support &amp; contact</b></span><svg class="ic"><use href="#i-caret-right"/></svg></button>
+    <button class="row" id="optLegal"><svg class="ic"><use href="#i-shield-check"/></svg><span class="grow"><b>Privacy, terms &amp; credits</b></span><svg class="ic"><use href="#i-caret-right"/></svg></button>
+    <button class="row" id="optReset"><svg class="ic" style="color:var(--bh-blood-hi)"><use href="#i-arrow-clockwise"/></svg><span class="grow"><b style="color:var(--bh-blood-hi)">Reset progress</b><small>Erases coins, unlocks and stats on this device</small></span></button>
+  </div>
+  <div class="verline" id="verLine">STICKHEADS</div>
+</section>
+
+<!-- ===== RESULTS ===== -->
+<section id="results" class="scr hidden">
+  <div id="cfWrap"></div>
+  <canvas id="vicPv" width="680" height="340" class="hidden"></canvas>
+  <div id="resTitle">VICTORY!</div>
+  <div id="resSub"></div>
+  <div class="res-rewards" id="resRewards"></div>
+  <div class="card" id="resRows"></div>
+  <div class="card res-xp"><span class="d t14" id="xpLbl">LVL 1</span><div class="bar"><i id="xpFill"></i></div></div>
+  <div id="resUnlocks"></div>
+  <div id="lbList"></div>
+  <div class="res-actions"><div class="in">
+    <button class="btn play" id="btnAgain"><svg class="ic"><use href="#i-arrow-clockwise"/></svg>PLAY AGAIN</button>
+    <button class="btn" id="btnNext"><svg class="ic"><use href="#i-arrow-right"/></svg>NEXT MAP</button>
+    <button class="btn" id="btnHome"><svg class="ic"><use href="#i-house"/></svg>HOME</button>
+  </div></div>
+</section>
+
+<!-- ===== PAUSE ===== -->
+<section id="pausemenu" class="scr hidden">
+  <div class="d t40">PAUSED</div>
+  <button class="btn play xl" id="btnResume"><svg class="ic"><use href="#i-play"/></svg>RESUME</button>
+  <div class="quickset">
+    <button id="btnSound2"><svg class="ic"><use href="#i-speaker-high"/></svg>SOUND</button>
+    <button id="btnHaptic2"><svg class="ic"><use href="#i-vibrate"/></svg>HAPTICS</button>
+    <button id="btnShake2"><svg class="ic"><use href="#i-device-mobile"/></svg>SHAKE</button>
+  </div>
+  <button class="btn blood" id="btnQuit"><svg class="ic"><use href="#i-sign-out"/></svg><span id="btnQuitT">QUIT MATCH</span></button>
+</section>
+
+<!-- ===== IN-MATCH DOM ===== -->
+<div id="vehBtn" class="hidden">HOP OFF</div>
+<button id="pauseB" class="hidden" aria-label="Pause"><svg class="ic"><use href="#i-pause"/></svg></button>
+<div id="hint" class="hidden">
+  <div class="d t28">HOW TO FIGHT</div>
+  <div class="hintbox">
+    <div class="hcell"><svg class="ic"><use href="#i-game-controller"/></svg><b>MOVE</b><span id="hintMove">Left pad · any direction</span></div>
+    <div class="hcell"><svg class="ic"><use href="#i-crosshair"/></svg><b>FIRE</b><span id="hintFire">Hold FIRE · drag to aim</span></div>
+  </div>
+  <div class="cap" style="max-width:420px">Grab weapons off the floor · First to 15 KOs wins</div>
+  <div class="htap">TAP TO DROP IN</div>
+</div>
+
+<!-- ===== MODALS ===== -->
+<div id="rankroad" class="modal hidden"><div class="mbox">
+  <div class="ribbon">RANK ROAD</div><button class="xclose" id="rrBack" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  <div class="chip plain" style="align-self:center"><b id="rrLvl">LVL 1</b></div>
+  <canvas id="rrCv" width="680" height="380" style="width:100%;max-width:340px;height:auto;align-self:center"></canvas>
+  <div class="mscroll well-panel" id="rrList" style="padding:6px"></div>
+</div></div>
+
+<div id="daily" class="modal hidden"><div class="mbox">
+  <div class="ribbon">DAILY CHALLENGES</div><button class="xclose" data-close="daily" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  <div class="cap" id="dailySub">New set every day</div>
+  <div class="mscroll daily-list" id="dailyList"></div>
+</div></div>
+
+<div id="party" class="modal hidden"><div class="mbox">
+  <div class="ribbon">PLAY ONLINE</div><button class="xclose" id="partyClose" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  <p style="text-align:center">One live arena. Everyone who taps JOIN lands in the same 5v5 Search &amp; Destroy match — empty seats are filled by bots.</p>
+  <div class="well-panel" style="padding:10px 12px;display:flex;align-items:center;gap:10px;text-align:left"><svg class="ic" style="width:22px;height:22px;color:var(--bh-cash-hi)"><use href="#i-wifi-high"/></svg><div style="flex:1"><div class="d t14" id="partyStat">CHECKING SERVER…</div><div class="dim t12" id="partyCode">Phone, tablet and desktop all play together</div></div></div>
+  <button class="btn ice xl" id="partyJoin"><svg class="ic"><use href="#i-globe-hemisphere-west"/></svg>JOIN LIVE ARENA</button>
+  <button class="btn" id="partyShare"><svg class="ic"><use href="#i-share-network"/></svg>INVITE FRIENDS</button>
+</div></div>
+
+<div id="buyModal" class="modal hidden"><div class="mbox">
+  <div class="ribbon" id="buyTitle">UNLOCK</div><button class="xclose" data-close="buyModal" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  <div class="buy-art" id="buyArt"><canvas id="buyPv" width="300" height="276"></canvas></div>
+  <div><div class="d t22" id="buyName">ITEM</div><div class="cap" id="buySub" style="margin-top:4px">RARE · SKIN</div></div>
+  <p id="buyMsg" style="text-align:center"></p>
+  <button class="btn play xl" id="buyGo"><svg class="ic"><use href="#i-coin"/></svg><span id="buyGoT">BUY</span></button>
+  <button class="btn ghost sm" data-close="buyModal">NOT NOW</button>
+</div></div>
+
+<div id="passModal" class="modal hidden"><div class="mbox">
+  <div class="ribbon">PREMIUM PASS</div><button class="xclose" id="passNo" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  <div class="well-panel" style="padding:12px;text-align:left;display:flex;flex-direction:column;gap:9px;font-size:14px;color:var(--tx-2)">
+    <div><b style="color:#fff">Premium reward row</b> — unlocks on all 30 tiers</div>
+    <div><b style="color:#fff">Season plates &amp; auras</b> — only in this pass</div>
+    <div><b style="color:#fff">PRISM mythic aura</b> at tier 30</div>
+  </div>
+  <p id="passMsg" style="text-align:center">Paid with coins you earn in matches. No real money.</p>
+  <button class="btn play xl" id="passGo"><svg class="ic"><use href="#i-coin"/></svg><span id="passGoT">UNLOCK</span></button>
+</div></div>
+
+<div id="howto" class="modal hidden"><div class="mbox">
+  <div class="ribbon">HOW TO PLAY</div><button class="xclose" data-close="howto" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  <div class="mscroll">
+    <div class="howgrid">
+      <div class="hc"><svg class="ic"><use href="#i-game-controller"/></svg><b>Move</b>Left pad on phones · WASD on desktop</div>
+      <div class="hc"><svg class="ic"><use href="#i-crosshair"/></svg><b>Fire</b>Hold FIRE and drag to aim · mouse on desktop</div>
+      <div class="hc"><svg class="ic"><use href="#i-sword"/></svg><b>Gear up</b>Walk over weapons and power pads to grab them</div>
+      <div class="hc"><svg class="ic"><use href="#i-fire"/></svg><b>Streaks</b>Chain KOs without dying to call in killstreaks</div>
+      <div class="hc"><svg class="ic"><use href="#i-coin"/></svg><b>Earn</b>Every match pays coins and XP · dailies pay more</div>
+      <div class="hc"><svg class="ic"><use href="#i-t-shirt"/></svg><b>Flex</b>Spend coins on skins, auras and plates</div>
+    </div>
+  </div>
+  <button class="btn play" data-close="howto">GOT IT</button>
+</div></div>
+
+<div id="legal" class="modal hidden"><div class="mbox">
+  <div class="ribbon">THE FINE PRINT</div><button class="xclose" id="legalClose" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  <div class="mscroll">
+    <h3>Privacy</h3>
+    <p>Your progress (coins, unlocks, stats, settings) is saved only on this device. No account is needed and we do not collect personal information, show ads or use tracking.</p>
+    <p>If you choose ONLINE, your live gameplay inputs (movement, aim and fire) are sent to our game server so other players can see you in the match. Like any website, the server can see your network address while you are connected. Nothing from online play is stored after you leave.</p>
+    <h3>Terms</h3>
+    <p>Play fair and be kind. Cosmetic items are for in-game use only and have no cash value. Coins are earned by playing and cannot be bought or cashed out. The game is provided as is.</p>
+    <h3>Credits</h3>
+    <p>STICKHEADS © World Class Creative Design and Tech LLC. Fonts: Barlow and Barlow Condensed (SIL Open Font License). Icons: Phosphor Icons (MIT License).</p>
+    <p><a href="privacy.html" target="_blank" rel="noopener" id="legalLink" style="color:var(--bh-ice-hi);font-weight:900">Read the full privacy policy and terms</a></p>
+  </div>
+  <button class="btn play" data-close="legal">GOT IT</button>
+</div></div>
+
+<div id="support" class="modal hidden"><div class="mbox">
+  <div class="ribbon">SUPPORT</div><button class="xclose" data-close="support" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+  <div class="mscroll">
+    <h3>Game froze or looks wrong</h3><p>Close the tab and open the game again. Your progress is saved after every match and every purchase.</p>
+    <h3>My progress is gone</h3><p>Progress is stored in this browser on this device. A different browser, a private window or clearing site data starts a fresh save.</p>
+    <h3>Online will not connect</h3><p>Check your connection and try again in a minute. The live arena restarts briefly when we ship an update.</p>
+    <h3>Controls feel off</h3><p>Settings has left-handed controls, aim assist, screen shake and a low graphics mode for older phones.</p>
+    <p id="supContact" class="hidden" style="text-align:center"></p>
+  </div>
+  <button class="btn hidden" id="supMail"><svg class="ic"><use href="#i-envelope-simple"/></svg>EMAIL SUPPORT</button>
+  <button class="btn play" data-close="support">GOT IT</button>
+</div></div>
+
+<div id="confirm" class="modal hidden"><div class="mbox">
+  <div class="ribbon" id="cfTitle">ARE YOU SURE?</div>
+  <p id="cfMsg" style="text-align:center"></p>
+  <div class="btnrow"><button class="btn" id="cfNo">CANCEL</button><button class="btn blood" id="cfYes">YES</button></div>
+</div></div>
+
+<div id="toast" class="hidden"></div>
