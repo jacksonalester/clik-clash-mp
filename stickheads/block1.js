@@ -6846,7 +6846,7 @@ function drawSpirit(s){
 const SH_HEAD=12.5, SH_HK=SH_HEAD/16.5, SH_LIMB=2.6, SH_STRIDE=23, SH_SHOULDER=11.5, SH_ARM=11.2, SH_HAND=2.6, SH_GX=6;
 const SH_EYES=false;
 /* plain look: big black head, thin black limbs, the skin shows only as a thin ring on the head */
-const SH_SIMPLE=true, SH_INK='#101114', SH_HALO='rgba(255,255,255,.42)', SH_PVHALO='rgba(238,242,250,.95)';
+const SH_SIMPLE=true, SH_INK='#0c0d10', SH_HALO='rgba(0,0,0,0)', SH_PVHALO='rgba(238,242,250,.95)';
 const _shOl={};
 function shOutline(c){
   if(_shOl[c]) return _shOl[c];
@@ -6859,7 +6859,7 @@ function shOutline(c){
 function shLimb(g,p,col,ol,w){
   g.lineCap='round'; g.lineJoin='round';
   g.beginPath(); g.moveTo(p[0],p[1]); for(let i=2;i<p.length;i+=2) g.lineTo(p[i],p[i+1]);
-  g.strokeStyle=ol; g.lineWidth=w+2.1; g.stroke();
+  if(ol!=='rgba(0,0,0,0)'){ g.strokeStyle=ol; g.lineWidth=w+2.1; g.stroke(); }
   g.strokeStyle=col; g.lineWidth=w; g.stroke();
 }
 /* two-bone arm: shoulder -> elbow (bent outward on `side`) -> hand; straight when the hand is out of reach */
@@ -6952,8 +6952,8 @@ function drawCorpse(c){
     head=[18,0];
   }
   drawChar(g,{x:head[0],y:head[1],sk:c.burnt?Object.assign({},sk,{body:'#453d49'}):sk,aim:0,scale:1,headOnly:true,seed:2,walk:0,flash:0,inv:0});
-  g.strokeStyle=SH_SIMPLE?'#f2f4f8':INK; g.lineWidth=2; g.lineCap='round';
-  for(const s of [-1,1]){ const ex=head[0]+1.5, ey=head[1]+s*4.2;
+  g.strokeStyle=INK; g.lineWidth=2; g.lineCap='round';
+  if(!SH_SIMPLE) for(const s of [-1,1]){ const ex=head[0]+1.5, ey=head[1]+s*4.2;
     g.beginPath(); g.moveTo(ex-1.8,ey-1.8); g.lineTo(ex+1.8,ey+1.8); g.stroke();
     g.beginPath(); g.moveTo(ex+1.8,ey-1.8); g.lineTo(ex-1.8,ey+1.8); g.stroke(); }
   g.restore(); g.globalAlpha=1; g.lineCap='butt';
@@ -6965,7 +6965,7 @@ function drawFullBody(g,cx,footY,sk,t){
 
 function drawChar(g,o){
   if(o.pv) return drawStickPv(g,o);
-  if(o.inv>0){
+  if(o.inv>0&&!SH_SIMPLE){
     g.save(); g.translate(o.x,o.y);
     g.strokeStyle='rgba(126,240,255,'+(0.35+0.25*Math.sin(T*9))+')';
     g.lineWidth=2.5; g.setLineDash([7,7]); g.lineDashOffset=-T*30;
@@ -6978,6 +6978,7 @@ function drawChar(g,o){
   const pa=o.aim+Math.PI/2, HK=SH_HK, HO=!!o.headOnly;
   const LC=(o.flash>0.06)?'#ffffff':(SH_SIMPLE?SH_INK:body), OC=SH_SIMPLE?SH_HALO:shOutline(body), LW=SH_LIMB*scale;
   g.save(); g.translate(o.x,o.y);
+  const _ga=g.globalAlpha; if(SH_SIMPLE&&o.inv>0&&!o.pvRim) g.globalAlpha=_ga*(.45+.35*(Math.sin(T*16)>0?1:0));
   /* legs: swing fore and aft along the direction of travel, hidden at rest */
   if(!o.riding&&!HO){
     const st=(o.stride!=null?o.stride:(o.moving?1:0));
@@ -7119,11 +7120,9 @@ function drawChar(g,o){
   g.lineCap='butt'; g.lineJoin='miter';
   g.save(); g.scale(HK,HK);
   if(SH_SIMPLE){
-    const ring=(sk.body==='holo'?body:sk.body)||'#8b94a5';
     g.beginPath(); g.arc(0,0,R,0,TAU);
-    g.lineWidth=(o.pvRim?5:3)*scale/HK; g.strokeStyle=o.pvRim?SH_PVHALO:SH_HALO; g.stroke();
+    if(o.pvRim){ g.lineWidth=4*scale/HK; g.strokeStyle=SH_PVHALO; g.stroke(); }
     g.fillStyle=SH_INK; g.fill();
-    g.beginPath(); g.arc(0,0,R-1.3*scale/HK,0,TAU); g.lineWidth=2.1*scale/HK; g.strokeStyle=ring; g.stroke();
   } else {
   // fuzz edge
   if(sk.feat==='fuzz'){
@@ -7504,12 +7503,12 @@ function drawChar(g,o){
     g.globalAlpha=Math.min(1,o.flash*6); g.fillStyle='#fff';
     g.beginPath(); g.arc(0,0,R,0,TAU); g.fill(); g.globalAlpha=1;
   }
-  const _inj=Math.min(1,(o.hurtT||0)/3);
+  const _inj=SH_SIMPLE?0:Math.min(1,(o.hurtT||0)/3);
   if(_inj>0){
     g.globalAlpha=_inj*.38*(0.6+0.4*Math.sin(t*7.2)); g.fillStyle='#ff4d5e';
     g.beginPath(); g.arc(0,0,R+1.5,0,TAU); g.fill(); g.globalAlpha=1;
   }
-  if((o.streak||0)>=2){
+  if(!SH_SIMPLE&&(o.streak||0)>=2){
     const st=o.streak, gold=st>=15, hot=st>=10;
     const nfl=Math.min(4+st,15);
     for(let i=0;i<nfl;i++){
@@ -7569,11 +7568,11 @@ function drawChar(g,o){
     }
     g.restore(); g.globalAlpha=1;
   }
-  if(o.inv>0 && (t*8|0)%2===0){
+  if(!SH_SIMPLE && o.inv>0 && (t*8|0)%2===0){
     g.strokeStyle='#43e8ff'; g.lineWidth=2; g.setLineDash([5,5]);
     g.beginPath(); g.arc(0,0,SH_HEAD*scale+7,0,TAU); g.stroke(); g.setLineDash([]);
   }
-  g.restore();
+  g.restore(); g.globalAlpha=_ga;
   if(!HO) drawNameTag(g,o);
 }
 
@@ -9637,7 +9636,7 @@ function drawWorld(){
     ctx.fillStyle='rgba(20,24,34,.26)';
     ctx.beginPath(); ctx.ellipse(e.x,e.y+7,e.r*1.05,e.r*.55,0,0,TAU); ctx.fill();
   }
-  for(const e of ents){ if(!e.dead) drawAura(ctx,e.x,e.y+6,auraOf(e.aura),Math.max(e.heat,e.boost>0?.65:0),e.seed); }
+  if(!SH_SIMPLE) for(const e of ents){ if(!e.dead) drawAura(ctx,e.x,e.y+6,auraOf(e.aura),Math.max(e.heat,e.boost>0?.65:0),e.seed); }
   // characters
   for(const e of ents){
     if(e.dead) continue;
@@ -9814,7 +9813,7 @@ function drawWorld(){
     ctx.globalAlpha=1; ctx.textAlign='left';
   }
   // ascending spirits
-  for(const s of spirits) drawSpirit(s);
+  if(!SH_SIMPLE) for(const s of spirits) drawSpirit(s);
 }
 
 /* ---------- RENDER: HUD + FRAME ---------- */
@@ -12053,7 +12052,9 @@ function loop(ts){
   requestAnimationFrame(loop);
   const raw=(ts-last)/1000; last=ts;
   perfEma=perfEma*.95+Math.min(80,raw*1000)*.05; perfLow=perfEma>19;
+  if(_dprCap>2&&DPR>2){ _slowT=perfEma>21?_slowT+Math.min(raw,.1):0; if(_slowT>2.5){ _dprCap=2; _slowT=0; resize(); } }
   if(raw>0.5) return;
+  if(Math.abs(_wantDpr()-DPR)>.01) resize();
   const dt=clamp(raw,0,.05);
   try{
     if(NET.on){ netFrame(dt); } else { update(dt); }
@@ -12095,10 +12096,11 @@ function resize(){
   W=(typeof window!=='undefined'&&window.innerWidth)||390;
   H=(typeof window!=='undefined'&&window.innerHeight)||780;
   ZOOMT = W>=1400?1.57 : W>=1000?1.48 : W>=760?1.41 : 1.32;
-  DPR=Math.min(1.75,(typeof window!=='undefined'&&window.devicePixelRatio)||1);
+  DPR=_wantDpr();
   if(cv){ cv.width=W*DPR; cv.height=H*DPR; cv.style.width=W+'px'; cv.style.height=H+'px'; }
 }
-let perfEma=8, perfLow=false;
+let perfEma=8, perfLow=false, _dprCap=3, _slowT=0;
+function _wantDpr(){ const d=(typeof window!=='undefined'&&window.devicePixelRatio)||1; let m=false; try{ m=inMenuState(); }catch(_e){} return Math.min(m?1.75:_dprCap,d); }
 /* ===== ONLINE MODE (v38 netcode) — thin client, server-authoritative ===== */
 const NET={on:false,ws:null,myId:null,team:null,A:null,B:null,tA:0,tB:0,sendT:0,fx:{},sd:null,url:null};
 function netDefaultUrl(){
