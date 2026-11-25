@@ -7737,8 +7737,10 @@ function drawSpirit(s){
   g.restore(); g.globalAlpha=1;
 }
 /* ===== STICKHEADS: stick-figure rig (top view in matches, front view in menus) ===== */
-const SH_HEAD=9.6, SH_HK=SH_HEAD/16.5, SH_LIMB=2.4, SH_STRIDE=18, SH_SHOULDER=10, SH_ARM=11.2, SH_HAND=2.6, SH_GX=5;
+const SH_HEAD=12.5, SH_HK=SH_HEAD/16.5, SH_LIMB=2.6, SH_STRIDE=23, SH_SHOULDER=11.5, SH_ARM=11.2, SH_HAND=2.6, SH_GX=6;
 const SH_EYES=false;
+/* plain look: big black head, thin black limbs, the skin shows only as a thin ring on the head */
+const SH_SIMPLE=true, SH_INK='#101114', SH_HALO='rgba(255,255,255,.42)', SH_PVHALO='rgba(238,242,250,.95)';
 const _shOl={};
 function shOutline(c){
   if(_shOl[c]) return _shOl[c];
@@ -7784,27 +7786,27 @@ const OPT_SELFTAG=false;
 function drawStickPv(g,o){
   const sk=o.sk||SKINS[0], t=T, s=o.scale||1, mode=o.pv===true?'full':o.pv;
   const body=sk.body==='holo'?'hsl('+((t*40)%360)+',90%,70%)':sk.body;
-  const OC=shOutline(body), LW=(SH_LIMB+.5)*s;
+  const OC=SH_SIMPLE?SH_PVHALO:shOutline(body), LW=(SH_LIMB+.5)*s; const LCp=SH_SIMPLE?SH_INK:body;
   g.save(); g.translate(o.x,o.y);
   if(mode==='head'){
-    const hr=12.5*s;
-    shLimb(g,[-15*s,22*s,-11*s,12*s,0,8*s,11*s,12*s,15*s,22*s],body,OC,LW);
-    shLimb(g,[0,8*s,0,2*s],body,OC,LW);
-    drawChar(g,{x:0,y:-6*s,sk,aim:Math.PI/2,scale:hr/SH_HEAD,headOnly:true,eyes:true,seed:o.seed||2,walk:0,flash:0,inv:0});
+    const hr=15*s;
+    shLimb(g,[-15*s,22*s,-11*s,12*s,0,8*s,11*s,12*s,15*s,22*s],LCp,OC,LW);
+    shLimb(g,[0,8*s,0,2*s],LCp,OC,LW);
+    drawChar(g,{x:0,y:-6*s,sk,aim:Math.PI/2,scale:hr/SH_HEAD,headOnly:true,eyes:true,pvRim:true,seed:o.seed||2,walk:0,flash:0,inv:0});
     g.restore(); return;
   }
   const br=mode==='cheer'?0:Math.sin(t*2.1+(o.seed||0))*.8*s;
   const mv=!!o.moving, ph=(o.walk||t*6)*1.0;
   /* shadow */
   g.fillStyle='rgba(0,0,0,.22)'; g.beginPath(); g.ellipse(0,27.5*s,15*s,3.6*s,0,0,TAU); g.fill();
-  const hip=[0,9*s], nk=[0,-6*s+br*.4];
+  const hip=[0,9*s], nk=[0,-3*s+br*.4];
   /* legs */
   for(const sd of [-1,1]){
     const sw=mv?Math.sin(ph+(sd>0?0:Math.PI))*6*s:0, lift=mv?Math.max(0,Math.cos(ph+(sd>0?0:Math.PI)))*2.4*s:0;
-    shLimb(g,[hip[0],hip[1],sd*4*s+sw*.5,18*s-lift*.5,sd*7*s+sw,26.5*s-lift],body,OC,LW);
+    shLimb(g,[hip[0],hip[1],sd*4*s+sw*.5,18*s-lift*.5,sd*7*s+sw,26.5*s-lift],LCp,OC,LW);
   }
   /* torso */
-  shLimb(g,[hip[0],hip[1],nk[0],nk[1]],body,OC,LW);
+  shLimb(g,[hip[0],hip[1],nk[0],nk[1]],LCp,OC,LW);
   /* arms */
   const sh=[0,-2.5*s+br*.4];
   for(const sd of [-1,1]){
@@ -7812,12 +7814,12 @@ function drawStickPv(g,o){
     if(mode==='cheer'){ const pump=Math.sin(t*7+(sd>0?0:Math.PI))*3*s; el=[sd*9*s,-10*s]; hd=[sd*12*s,-21*s-pump]; }
     else if(mv){ const sw=Math.sin(ph+(sd>0?Math.PI:0))*5*s; el=[sd*6*s+sw*.4,4*s]; hd=[sd*8*s+sw,12*s]; }
     else { const sway=Math.sin(t*1.7+sd)*.6*s; el=[sd*7.5*s,4.5*s+br*.3]; hd=[sd*10.5*s+sway,12.5*s+br*.2]; }
-    shLimb(g,[sh[0],sh[1],el[0],el[1],hd[0],hd[1]],body,OC,LW);
-    shHand(g,hd[0],hd[1],2.9*s,body,OC);
+    shLimb(g,[sh[0],sh[1],el[0],el[1],hd[0],hd[1]],LCp,OC,LW);
+    if(!SH_SIMPLE) shHand(g,hd[0],hd[1],2.9*s,body,OC);
   }
   /* head */
-  const hr=11*s;
-  drawChar(g,{x:0,y:-16.5*s+br,sk,aim:Math.PI/2+(mode==='cheer'?Math.sin(t*3)*.12:0),scale:hr/SH_HEAD,headOnly:true,eyes:true,seed:o.seed||2,walk:0,flash:0,inv:0,streak:o.streak||0});
+  const hr=13.5*s;
+  drawChar(g,{x:0,y:-15*s+br,sk,aim:Math.PI/2+(mode==='cheer'?Math.sin(t*3)*.12:0),scale:hr/SH_HEAD,headOnly:true,eyes:true,pvRim:true,seed:o.seed||2,walk:0,flash:0,inv:0,streak:o.streak||0});
   g.restore();
 }
 /* knocked-out stick figure lying flat (whole body visible once it falls) */
@@ -7827,7 +7829,7 @@ function drawCorpse(c){
   g.globalAlpha=Math.min(.85,a*.85); g.fillStyle='rgba(150,20,45,.55)';
   g.beginPath(); g.ellipse(c.x,c.y+2,10+grow*22,(10+grow*22)*.6,0,0,TAU); g.fill();
   const sk=skinOf(c.skin); let body=sk.body==='holo'?'#8ff6ff':sk.body; if(c.burnt) body='#453d49';
-  const OC=shOutline(body), LW=SH_LIMB;
+  const OC=SH_SIMPLE?SH_HALO:shOutline(body), LW=SH_LIMB; if(SH_SIMPLE) body=c.burnt?'#2a2426':SH_INK;
   g.globalAlpha=a;
   g.save(); g.translate(c.x,c.y); g.rotate(c.rot);
   let head;
@@ -7840,12 +7842,12 @@ function drawCorpse(c){
     shLimb(g,[-8,0,6,0],body,OC,LW);
     shLimb(g,[-8,0,-15,-6,-24,-9],body,OC,LW); shLimb(g,[-8,0,-16,7,-23,13],body,OC,LW);
     shLimb(g,[4,0,4,-10,10,-17],body,OC,LW); shLimb(g,[4,0,9,9,6,18],body,OC,LW);
-    shHand(g,10,-17,SH_HAND,body,OC); shHand(g,6,18,SH_HAND,body,OC);
-    head=[15,0];
+    if(!SH_SIMPLE){ shHand(g,10,-17,SH_HAND,body,OC); shHand(g,6,18,SH_HAND,body,OC); }
+    head=[18,0];
   }
   drawChar(g,{x:head[0],y:head[1],sk:c.burnt?Object.assign({},sk,{body:'#453d49'}):sk,aim:0,scale:1,headOnly:true,seed:2,walk:0,flash:0,inv:0});
-  g.strokeStyle=INK; g.lineWidth=1.6; g.lineCap='round';
-  for(const s of [-1,1]){ const ex=head[0]+1.5, ey=head[1]+s*3.3;
+  g.strokeStyle=SH_SIMPLE?'#f2f4f8':INK; g.lineWidth=2; g.lineCap='round';
+  for(const s of [-1,1]){ const ex=head[0]+1.5, ey=head[1]+s*4.2;
     g.beginPath(); g.moveTo(ex-1.8,ey-1.8); g.lineTo(ex+1.8,ey+1.8); g.stroke();
     g.beginPath(); g.moveTo(ex+1.8,ey-1.8); g.lineTo(ex-1.8,ey+1.8); g.stroke(); }
   g.restore(); g.globalAlpha=1; g.lineCap='butt';
@@ -7865,10 +7867,10 @@ function drawChar(g,o){
     g.setLineDash([]); g.restore();
   }
   const sk=o.sk, t=T;
-  const scale=o.scale||1, R=(sk.feat==='fuzz'?19.5:16.5)*scale;
+  const scale=o.scale||1, R=((!SH_SIMPLE&&sk.feat==='fuzz')?19.5:16.5)*scale;
   const body = sk.body==='holo' ? 'hsl('+((t*40)%360)+',90%,70%)' : sk.body;
   const pa=o.aim+Math.PI/2, HK=SH_HK, HO=!!o.headOnly;
-  const LC=(o.flash>0.06)?'#ffffff':body, OC=shOutline(body), LW=SH_LIMB*scale;
+  const LC=(o.flash>0.06)?'#ffffff':(SH_SIMPLE?SH_INK:body), OC=SH_SIMPLE?SH_HALO:shOutline(body), LW=SH_LIMB*scale;
   g.save(); g.translate(o.x,o.y);
   /* legs: swing fore and aft along the direction of travel, hidden at rest */
   if(!o.riding&&!HO){
@@ -7878,7 +7880,7 @@ function drawChar(g,o){
       const amp=SH_STRIDE*scale*st*(o.sprint?1.18:1);
       for(const s of [1,-1]){
         const sw=Math.sin(ph+(s>0?0:Math.PI))*amp;
-        const hx=-sm*s*3.8*scale, hy=cm*s*3.8*scale;
+        const hx=-sm*s*4.4*scale, hy=cm*s*4.4*scale;
         const fx2=hx+cm*sw-sm*s*1.4*scale, fy2=hy+sm*sw+cm*s*1.4*scale;
         shLimb(g,[hx,hy,fx2,fy2],LC,OC,LW);
       }
@@ -7919,12 +7921,12 @@ function drawChar(g,o){
     const run=(o.moving && sw<.06)? Math.sin((o.walk||0)*1.1)*7*scale : 0;
     const hs=[];
     for(const s of [1,-1]){
-      let hx=o.moving? 2.5*scale-s*run : 9.5*scale+Math.sin(t*2.2+s)*.5, hy=o.moving? s*(SHW+2.6*scale) : s*(SHW-1.5*scale);
+      let hx=o.moving? 2*scale-s*run*1.15 : 16*scale+Math.sin(t*2.2+s)*.5, hy=o.moving? s*(SHW+5.5*scale) : s*(SHW-3*scale);
       if(kk>0){ if(s===ps){ hx=lerp(hx,R*.75+ext,kk); hy=lerp(hy,ps*3.2*scale,kk); } else { hx=lerp(hx,9*scale,kk); hy=lerp(hy,s*(SHW-1)*scale,kk); } }
       hs.push([s,hx,hy]);
     }
     for(const h of hs) shArm(g,0,h[0]*SHW,h[1],h[2],(kk>0&&h[0]===ps)||!o.moving?ARM*.62:0,h[0],LC,OC,LW);
-    for(const h of hs) shHand(g,h[1],h[2],(SH_HAND+.7)*scale,LC,OC);
+    if(!SH_SIMPLE) for(const h of hs) shHand(g,h[1],h[2],(SH_HAND+.7)*scale,LC,OC);
     g.restore();
   } else {
   g.translate(SH_GX*scale,0);
@@ -8003,13 +8005,20 @@ function drawChar(g,o){
   if(one){ const fxa=5*scale, fya=-(SHW+3*scale); hB=[csw*fxa+ssw*fya-SH_GX*scale, -ssw*fxa+csw*fya]; }
   shArm(g,shX(1),shY(1),hA[0],hA[1],ARM,1,LC,OC,LW);
   shArm(g,shX(-1),shY(-1),hB[0],hB[1],ARM,-1,LC,OC,LW);
-  shHand(g,hA[0],hA[1],SH_HAND*scale,LC,OC); shHand(g,hB[0],hB[1],SH_HAND*scale,LC,OC);
+  if(!SH_SIMPLE){ shHand(g,hA[0],hA[1],SH_HAND*scale,LC,OC); shHand(g,hB[0],hB[1],SH_HAND*scale,LC,OC); }
   g.restore();
   }
   }
   /* head: the BATTLEHEADS head cosmetics, drawn small on a stick-figure head */
   g.lineCap='butt'; g.lineJoin='miter';
   g.save(); g.scale(HK,HK);
+  if(SH_SIMPLE){
+    const ring=(sk.body==='holo'?body:sk.body)||'#8b94a5';
+    g.beginPath(); g.arc(0,0,R,0,TAU);
+    g.lineWidth=(o.pvRim?5:3)*scale/HK; g.strokeStyle=o.pvRim?SH_PVHALO:SH_HALO; g.stroke();
+    g.fillStyle=SH_INK; g.fill();
+    g.beginPath(); g.arc(0,0,R-1.3*scale/HK,0,TAU); g.lineWidth=2.1*scale/HK; g.strokeStyle=ring; g.stroke();
+  } else {
   // fuzz edge
   if(sk.feat==='fuzz'){
     g.fillStyle=body;
@@ -8383,6 +8392,7 @@ function drawChar(g,o){
       g.beginPath(); g.arc(s*5.5,-R*.78,4.2,0,TAU); g.fill(); g.stroke();
       g.fillStyle=INK; g.beginPath(); g.arc(s*5.5+fx*1.5,-R*.78+fy*1.5,1.7,0,TAU); g.fill();
     }
+  }
   }
   if(o.flash>0){
     g.globalAlpha=Math.min(1,o.flash*6); g.fillStyle='#fff';
