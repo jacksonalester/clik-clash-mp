@@ -11,6 +11,8 @@ ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 rd=lambda p: open(os.path.join(ROOT,p),encoding='utf-8').read()
 subprocess.run(['node','--check',os.path.join(ROOT,'block1.js')],check=True)
 js=rd('block1.js')
+# the menu fighter's art (dev/rig/build_rig.py) rides inside the page, so it works offline and inside the artifact
+js=js.replace("'__SH_RIG_ATLAS__'","'data:image/webp;base64,"+rd('dev/src/rig_atlas.b64').strip()+"'",1)
 css=("@font-face{font-family:'SHDisplay';font-weight:100 900;src:url(data:font/woff2;base64,%s) format('woff2');font-display:block}\n"
      "@font-face{font-family:'SHText';font-weight:100 600;src:url(data:font/woff2;base64,%s) format('woff2');font-display:swap}\n"
      "@font-face{font-family:'SHText';font-weight:700 900;src:url(data:font/woff2;base64,%s) format('woff2');font-display:swap}\n")%(rd('dev/src/display700.b64'),rd('dev/src/text500.b64'),rd('dev/src/text700.b64'))
