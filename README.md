@@ -14,10 +14,6 @@ One repository, two deployments. Every commit to `main` updates both.
 
 `block1.js` is the exact game code that is inlined in `index.html`. The server runs it headless so the browser and the server share one rule set.
 
-## STICKHEADS
-
-A stick-figure edition of the same game lives in [`stickheads/`](stickheads/) (same maps, weapons, movement and server; new characters and menus). See its README.
-
 ## Modes
 
 Quickplay (free-for-all, six maps in rotation) · Search & Destroy 5v5 · Capture the Flag 6v6 · Battle Royale (20) · Pantheon (gods only) · Online live arena.
